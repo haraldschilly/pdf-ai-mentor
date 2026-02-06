@@ -12,7 +12,7 @@ androidxJunit = "1.2.1"
 androidxEspressoCore = "3.6.1"
 uiTestJunit4 = "1.2.1"
 
-[libs]
+[libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }

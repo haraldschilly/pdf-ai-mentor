@@ -1,17 +1,17 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    kotlin("android")
-    id("org.jetbrains.kotlin.plugin.compose") version libs.versions.compose.compiler.get()
-    id("com.android.libraries.compose.compiler") version libs.versions.compose.compiler.get()
+
+    id("org.jetbrains.kotlin.plugin.compose") version libs.versions.composeCompiler.get()
+
 }
 
 android {
-    namespace = "com.schilly.pdfaimentor"
+    namespace = "ly.schil.pdfaimentor"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.schilly.pdfaimentor"
+        applicationId = "ly.schil.pdfaimentor"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -43,7 +43,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
     packaging {
         resources {
