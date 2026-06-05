@@ -1,8 +1,10 @@
 package ly.schil.pdfaimentor
 
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.content
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +16,18 @@ enum class Author { USER, MODEL, ERROR }
 data class ChatMessage(
     val author: Author,
     val text: String,
+    /** Cropped PDF region attached to this message (the core idea). */
+    val image: Bitmap? = null,
 )
+
+/** Used when the user sends a selection without typing a question. */
+private const val DEFAULT_SELECTION_PROMPT =
+    "Explain the selected part of this document in simple terms. " +
+        "If it contains formulas, walk through them step by step."
+
+private const val SELECTION_CONTEXT =
+    "The attached image is a region of an academic paper / document that " +
+        "the reader selected because it is unclear to them.\n\n"
 
 /**
  * Holds the chat state and talks to Gemini.
@@ -50,16 +63,26 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-    fun send(text: String) {
-        val prompt = text.trim()
-        if (prompt.isEmpty() || _isLoading.value) return
+    fun send(text: String, image: Bitmap? = null) {
+        val typed = text.trim()
+        if ((typed.isEmpty() && image == null) || _isLoading.value) return
 
-        _messages.update { it + ChatMessage(Author.USER, prompt) }
+        val prompt = typed.ifEmpty { DEFAULT_SELECTION_PROMPT }
+        _messages.update { it + ChatMessage(Author.USER, prompt, image) }
         _isLoading.value = true
 
         viewModelScope.launch {
             try {
-                val response = chat.sendMessage(prompt)
+                val response = chat.sendMessage(
+                    content {
+                        if (image != null) {
+                            image(image)
+                            text(SELECTION_CONTEXT + prompt)
+                        } else {
+                            text(prompt)
+                        }
+                    },
+                )
                 _messages.update {
                     it + ChatMessage(Author.MODEL, response.text ?: "(empty response)")
                 }

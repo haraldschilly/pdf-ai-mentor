@@ -1,5 +1,22 @@
 # TODO.md
 
+## Core interaction (THE main idea)
+
+"Point" at the part of the paper that is unclear and ask about it:
+
+1. Swipe-select vertically across a paragraph/formula/figure in the PDF.
+2. The app takes a **cropped screenshot** of exactly that region — this is
+   deliberately an *image*, not extracted text, so formulas, tables and
+   figures survive intact (Gemini is multimodal).
+3. The crop is sent together with a prompt (and general context: what kind
+   of document this is; later also title/authors/DOI) to the AI chat.
+4. The user can then ask follow-up questions in the same conversation —
+   the chat history keeps the context.
+
+Status: first version implemented (select mode → crop → attach to chat
+input → send with image). Still open: paper metadata in the prompt,
+multi-page selections, pinch-to-refine selection.
+
 ## Phase 1: Project Setup (High Priority)
 - [ ] Install Android Studio on Linux
 - [ ] Create new native Android project with Kotlin and Jetpack Compose
